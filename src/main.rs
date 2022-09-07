@@ -48,5 +48,4 @@ fn rocket() -> _ {
             routes![index, greet, set_cookie, get_cookies, template],
         )
         .attach(Template::fairing())
-    // .mount("/", FileServer::from(relative!("static")))
 }
