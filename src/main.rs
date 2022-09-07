@@ -1,4 +1,10 @@
-use rocket::{fs::relative, fs::FileServer, get, launch, routes};
+use rocket::{
+    fs::relative,
+    fs::FileServer,
+    get,
+    http::{Cookie, CookieJar},
+    launch, post, routes,
+};
 
 #[get("/")]
 fn index() -> &'static str {
@@ -10,9 +16,22 @@ fn greet(name: &str) -> String {
     format!("Hello, {name}")
 }
 
+//set cookies
+#[get("/cookie/<name>")]
+fn set_cookie(cookie: &CookieJar, name: String) -> &'static str {
+    cookie.add(Cookie::new(name, "Hello"));
+    "Added cookie"
+}
+#[get("/cookie")]
+fn get_cookies(cookie: &CookieJar) -> String {
+    cookie
+        .iter()
+        .map(|c| format!("{}: {}\n", c.name(), c.value()))
+        .collect()
+}
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![index, greet])
-        .mount("/", FileServer::from(relative!("static")))
+        .mount("/", routes![index, greet,set_cookie,get_cookies])
+        // .mount("/", FileServer::from(relative!("static")))
 }
