@@ -35,11 +35,12 @@ fn get_cookies(cookie: &CookieJar) -> String {
 #[get("/temp")]
 fn template(jar: &CookieJar) -> Template {
     let mut cs = HashMap::new();
-    for cookie in jar.iter() {
-        cs.insert(cookie.name(), cookie.value());
-    }
+    jar.iter().for_each(|c| {
+        cs.insert(c.name(), c.value());
+    });
     Template::render("index", context! {names: cs})
 }
+
 #[launch]
 fn rocket() -> _ {
     rocket::build()
