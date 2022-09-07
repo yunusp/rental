@@ -1,10 +1,11 @@
+use std::collections::HashMap;
+
 use rocket::{
-    fs::relative,
-    fs::FileServer,
     get,
     http::{Cookie, CookieJar},
-    launch, post, routes,
+    launch, routes,
 };
+use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
 fn index() -> &'static str {
@@ -29,9 +30,23 @@ fn get_cookies(cookie: &CookieJar) -> String {
         .map(|c| format!("{}: {}\n", c.name(), c.value()))
         .collect()
 }
+
+//templating
+#[get("/temp")]
+fn template(jar: &CookieJar) -> Template {
+    let mut cs = HashMap::new();
+    for cookie in jar.iter() {
+        cs.insert(cookie.name(), cookie.value());
+    }
+    Template::render("index", context! {names: cs})
+}
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![index, greet,set_cookie,get_cookies])
-        // .mount("/", FileServer::from(relative!("static")))
+        .mount(
+            "/",
+            routes![index, greet, set_cookie, get_cookies, template],
+        )
+        .attach(Template::fairing())
+    // .mount("/", FileServer::from(relative!("static")))
 }
