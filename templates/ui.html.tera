@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookies for all</title>
+
 </head>
 
 <body>
@@ -17,9 +18,12 @@
 
     <ul>
         {%for c in cs%}
-        <li>{{c}}</li>
+        <li class="removable" id="{{c}}">
+            <a href="/del/{{c}}">{{c}}</a>
+        </li>
         {%endfor%}
     </ul>
+    </script>
 </body>
 
 </html>

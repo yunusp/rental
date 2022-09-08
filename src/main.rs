@@ -40,8 +40,17 @@ async fn p_index(db: &State<NoteRepo>, data: Form<NoteReq>) -> Redirect {
     }
     Redirect::to(uri!("/"))
 }
-#[delete("/?<item>")]
-async fn d_index(item: String) -> Redirect {
+#[get("/del/<item>")]
+async fn d_index(db: &State<NoteRepo>, item: String) -> Redirect {
+    db.col
+        .delete_one(
+            doc! {
+                "text": item.to_owned()
+            },
+            None,
+        )
+        .await
+        .unwrap();
     Redirect::to(uri!("/"))
 }
 #[launch]
@@ -49,6 +58,6 @@ async fn rocket() -> _ {
     let db = NoteRepo::init().await;
     rocket::build()
         .manage(db)
-        .mount("/", routes![index, p_index])
+        .mount("/", routes![index, p_index, d_index])
         .attach(Template::fairing())
 }
