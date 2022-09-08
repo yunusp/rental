@@ -20,8 +20,10 @@ async fn s_sign_in() -> Template {
     Template::render("signin", context! {})
 }
 #[get("/signup")]
-async fn s_sign_up(ctx: &State<Mutex<HashMap<String, bool>>>) -> Template {
+async fn s_sign_up(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
     let lock = ctx.lock().unwrap().to_owned();
+    ctx.lock().unwrap().remove("no_pass_match");
+    ctx.lock().unwrap().remove("uname_unavail");
     Template::render("signup", lock)
 }
 #[derive(FromForm)]
@@ -32,14 +34,14 @@ struct SignUpForm {
 }
 #[post("/signup", data = "<data>")]
 async fn p_sign_up(
-    ctx: &State<Mutex<HashMap<String, bool>>>,
+    ctx: &State<Mutex<HashMap<String, String>>>,
     db: &State<UserRepo>,
     data: Form<SignUpForm>,
 ) -> Redirect {
     if data.pass != data.pass1 {
         //TODO: add to context
         let mut ctx = ctx.lock().unwrap();
-        ctx.insert("no_pass_match".to_string(), true);
+        ctx.insert("no_pass_match".to_string(), "a".to_string());
         println!("{:?}", ctx);
         return Redirect::to("/signup");
     }
@@ -52,7 +54,12 @@ async fn p_sign_up(
         Some(resp) => {
             resp.unwrap();
         }
-        None => return Redirect::to(uri!("/error")), //TODO: Add to context
+        None => {
+            ctx.lock()
+                .unwrap()
+                .insert("uname_unavail".to_string(), "true".to_string());
+            return Redirect::to(uri!("/signup"));
+        } //TODO: Add to context
     }
     Redirect::to(uri!("/"))
 }
@@ -60,7 +67,7 @@ async fn p_sign_up(
 #[launch]
 async fn rocket() -> _ {
     let db = UserRepo::init().await;
-    let ctx: Mutex<HashMap<String, bool>> = Mutex::new(HashMap::new());
+    let ctx: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     rocket::build()
         .manage(db)
         .manage(ctx)
