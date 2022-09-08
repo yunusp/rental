@@ -1,93 +1,45 @@
-use std::collections::HashMap;
-
-use rocket::{
-    form::Form,
-    get,
-    http::{Cookie, CookieJar},
-    launch, post,
-    response::Redirect,
-    routes, uri, FromForm,
-};
+mod models;
+mod repo;
+use models::note_model::Note;
+use repo::note_repo::NoteRepo;
+use rocket::{form::Form, get, launch, post, response::Redirect, routes, uri, FromForm, State};
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
-fn index() -> &'static str {
-    "Hello world!"
-}
-
-#[get("/hello/<name>")]
-fn greet(name: &str) -> String {
-    format!("Hello, {name}")
-}
-
-//set cookies
-#[get("/cookie/<name>")]
-fn set_cookie(cookie: &CookieJar, name: String) -> &'static str {
-    cookie.add(Cookie::new(name, "Hello"));
-    "Added cookie"
-}
-#[get("/cookie")]
-fn get_cookies(cookie: &CookieJar) -> String {
-    cookie
+async fn index(db: &State<NoteRepo>) -> Template {
+    let cs: Vec<String> = db
+        .get_notes()
+        .await
+        .unwrap()
         .iter()
-        .map(|c| format!("{}: {}\n", c.name(), c.value()))
-        .collect()
-}
-
-//templating
-#[get("/temp")]
-fn template(jar: &CookieJar) -> Template {
-    let mut cs = HashMap::new();
-    jar.iter().for_each(|c| {
-        cs.insert(c.name(), c.value());
-    });
-    Template::render("index", context! {names: cs})
-}
-
-#[get("/temp/ui")]
-fn show_ui(jar: &CookieJar) -> Template {
-    let mut cs = HashMap::new();
-    jar.iter().for_each(|c| {
-        cs.insert(c.name(), c.value());
-    });
-    Template::render("ui", context! {cs: cs})
+        .map(move |note| note.text.to_owned())
+        .collect();
+    Template::render("ui", context! {cs})
 }
 
 #[derive(FromForm)]
-struct FormData {
-    name: String,
-    value: String,
+struct NoteReq {
+    text: String,
 }
 
-#[post("/temp/ui", data = "<data>")]
-fn add_cookie(jar: &CookieJar, data: Form<FormData>) -> Redirect {
-    jar.add(Cookie::new(data.name.to_owned(), data.value.to_owned()));
-    Redirect::to(uri!("/temp/ui"))
-}
-
-#[get("/temp/ui/clear")]
-fn reset_cookies(jar: &CookieJar) -> Redirect {
-    for cookie in jar.iter() {
-        jar.remove(Cookie::named(cookie.name()).into_owned());
+#[post("/", data = "<data>")]
+async fn p_index(db: &State<NoteRepo>, data: Form<NoteReq>) -> Redirect {
+    if data.text != "".to_string() {
+        db.add_note(Note {
+            id: None,
+            text: data.text.to_owned(),
+        })
+        .await
+        .unwrap();
     }
-    Redirect::to(uri!("/temp/ui"))
+    Redirect::to(uri!("/"))
 }
 
 #[launch]
-fn rocket() -> _ {
+async fn rocket() -> _ {
+    let db = NoteRepo::init().await;
     rocket::build()
-        .mount(
-            "/",
-            routes![
-                index,
-                greet,
-                set_cookie,
-                get_cookies,
-                template,
-                show_ui,
-                add_cookie,
-                reset_cookies
-            ],
-        )
+        .manage(db)
+        .mount("/", routes![index, p_index])
         .attach(Template::fairing())
 }

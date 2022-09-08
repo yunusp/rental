@@ -9,16 +9,15 @@
 </head>
 
 <body>
-    <form action="/temp/ui" method="post">
-        name: <input type="text" name="name" id="name"> <br>
-        value: <input type="text" name="value" id="value"> <br>
+    <form action="/" method="post">
+        name: <input type="text" name="text" id="name"> <br>
         <input type="submit">
-        <a href="/temp/ui/clear">reset</a>
+        <a href="/">reset</a>
     </form>
 
     <ul>
-        {%for key,value in cs%}
-        <li>{{key}} -> {{value}}</li>
+        {%for c in cs%}
+        <li>{{c}}</li>
         {%endfor%}
     </ul>
 </body>
