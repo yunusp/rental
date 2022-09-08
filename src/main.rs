@@ -36,7 +36,6 @@ async fn p_index(db: &State<NoteRepo>, data: Form<NoteReq>) -> Redirect {
             .await
             .unwrap();
         }
-        // println!("duplicate!");
     }
     Redirect::to(uri!("/"))
 }
