@@ -14,6 +14,7 @@ chrono = "0.4" # Used for setting DateTimes
 serde = "1" # Used in the Map Data into Structs section
 dotenv = "0.15.0"
 futures = "0.3.24"
+sha2 = "0.10.5"
 
 [dependencies.rocket_dyn_templates]
 version = "0.1.0-rc.2"
