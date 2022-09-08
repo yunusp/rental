@@ -1,9 +1,13 @@
 mod models;
 mod repo;
 use bson::doc;
+use models::user_model::User;
+use rental::sha256sum;
 use repo::note_repo::NoteRepo;
-use rocket::{form::Form, get, launch, post, response::Redirect, routes, uri, FromForm};
+use rocket::{form::Form, get, launch, post, response::Redirect, routes, uri, FromForm, State};
 use rocket_dyn_templates::{context, Template};
+
+use crate::repo::user_repo::UserRepo;
 
 #[get("/")]
 async fn index() -> Template {
@@ -25,18 +29,27 @@ struct SignUpForm {
     pass1: String,
 }
 #[post("/signup", data = "<data>")]
-async fn p_sign_up(data: Form<SignUpForm>) -> Redirect {
+async fn p_sign_up(db: &State<UserRepo>, data: Form<SignUpForm>) -> Redirect {
     if data.pass != data.pass1 {
         //TODO: add to context
-        return Redirect::to("/error");
+        return Redirect::to("/errorpass");
     }
-    
+    let new_user = User {
+        id: None,
+        uname: data.uname.to_owned(),
+        pass: sha256sum(&data.pass),
+    };
+    match db.add_user(new_user).await {
+    Some(resp) => {resp.unwrap();},
+    None => return Redirect::to(uri!("/error")), //TODO: Add to context
+}
+    // db.add_user(new_user).await.unwrap().unwrap();
     Redirect::to(uri!("/"))
 }
 
 #[launch]
 async fn rocket() -> _ {
-    let db = NoteRepo::init().await;
+    let db = UserRepo::init().await;
     rocket::build()
         .manage(db)
         .mount("/", routes![index, s_sign_in, s_sign_up, p_sign_up])

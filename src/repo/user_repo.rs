@@ -15,7 +15,7 @@ impl UserRepo {
         let uri = env::var("MONGOURI").expect("ERROR: no uri found");
         let client = Client::with_uri_str(uri).await.unwrap();
         let db = client.database("rental");
-        let col: Collection<User> = db.collection("notes");
+        let col: Collection<User> = db.collection("users");
         UserRepo { col }
     }
 
@@ -24,7 +24,9 @@ impl UserRepo {
     /// 
     /// `None` indicates a user is already present.
     pub async fn add_user(&self, user: User) -> Option<Result<InsertOneResult, Error>> {
+        println!("Adding user");
         if self.is_duplicate(&user.uname).await {
+            println!("found duplicate: {}", user.uname);
             return None;
         }
         let new_user = User {
@@ -39,12 +41,12 @@ impl UserRepo {
         Some(())
     }
 
-    pub async fn is_duplicate(&self, uname: &String) -> bool {
+    async fn is_duplicate(&self, uname: &String) -> bool {
         matches!(
             self.col
                 .find_one(
                     doc!(
-                        "name": uname.to_owned()
+                        "uname": uname.to_owned()
                     ),
                     None,
                 )
