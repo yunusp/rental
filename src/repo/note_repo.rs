@@ -1,11 +1,12 @@
 use crate::models::note_model::Note;
+use bson::doc;
 use dotenv;
 use futures::TryStreamExt;
 use mongodb::{error::Error, results::InsertOneResult, Client, Collection};
 use std::env;
 
 pub struct NoteRepo {
-    col: Collection<Note>,
+    pub col: Collection<Note>,
 }
 
 impl NoteRepo {
@@ -27,10 +28,25 @@ impl NoteRepo {
     }
 
     pub async fn get_notes(&self) -> Result<Vec<Note>, Error> {
-        let cursor = match self.col.find(None, None).await {
-            Ok(cursor) => cursor,
-            Err(_) => panic!(),
-        };
-        cursor.try_collect().await
+        self.col.find(None, None).await.unwrap().try_collect().await
+    }
+
+    pub async fn is_duplicate(&self, note: &String) -> bool {
+        match self
+            .col
+            .find_one(
+                doc!(
+                    "text": note.to_owned()
+                ),
+                None,
+            )
+            .await
+        {
+            Ok(x) => match x {
+                Some(_) => true,
+                None => false,
+            },
+            Err(_) => false,
+        }
     }
 }

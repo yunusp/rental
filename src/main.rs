@@ -1,8 +1,11 @@
 mod models;
 mod repo;
+use bson::doc;
 use models::note_model::Note;
 use repo::note_repo::NoteRepo;
-use rocket::{form::Form, get, launch, post, response::Redirect, routes, uri, FromForm, State};
+use rocket::{
+    delete, form::Form, get, launch, post, response::Redirect, routes, uri, FromForm, State,
+};
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
@@ -24,17 +27,23 @@ struct NoteReq {
 
 #[post("/", data = "<data>")]
 async fn p_index(db: &State<NoteRepo>, data: Form<NoteReq>) -> Redirect {
-    if data.text != "".to_string() {
-        db.add_note(Note {
-            id: None,
-            text: data.text.to_owned(),
-        })
-        .await
-        .unwrap();
+    if data.text != "" {
+        if !db.is_duplicate(&data.text).await {
+            db.add_note(Note {
+                id: None,
+                text: data.text.to_owned(),
+            })
+            .await
+            .unwrap();
+        }
+        // println!("duplicate!");
     }
     Redirect::to(uri!("/"))
 }
-
+#[delete("/?<item>")]
+async fn d_index(item: String) -> Redirect {
+    Redirect::to(uri!("/"))
+}
 #[launch]
 async fn rocket() -> _ {
     let db = NoteRepo::init().await;
