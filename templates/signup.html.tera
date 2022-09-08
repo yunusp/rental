@@ -6,6 +6,12 @@ Sign In
 Create a new account
 {% endblock header %}
 {% block content %}
+
+{# {% if no_pass_match %} #}
+{% if no_pass_match is defined%}
+<p>Passwords do not match. please try again</p>
+{# {% endif %} #}
+{% endif %}
 <form action="/signup" method="post">
     username: <input type="text" name="uname" id="uname"> <br>
     password: <input type="text" name="pass" id="pass"> <br>
