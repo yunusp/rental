@@ -3,7 +3,6 @@ mod repo;
 use bson::doc;
 use models::user_model::User;
 use rental::sha256sum;
-use repo::note_repo::NoteRepo;
 use rocket::{form::Form, get, launch, post, response::Redirect, routes, uri, FromForm, State};
 use rocket_dyn_templates::{context, Template};
 

@@ -5,10 +5,12 @@ use futures::TryStreamExt;
 use mongodb::{error::Error, results::InsertOneResult, Client, Collection};
 use std::env;
 
+#[allow(dead_code)]
 pub struct NoteRepo {
     pub col: Collection<Note>,
 }
 
+#[allow(dead_code)]
 impl NoteRepo {
     pub async fn init() -> Self {
         dotenv::dotenv().ok();

@@ -1,7 +1,6 @@
-use crate::models::{note_model::Note, user_model::User};
+use crate::models::user_model::User;
 use bson::doc;
 use dotenv;
-use futures::TryStreamExt;
 use mongodb::{error::Error, results::InsertOneResult, Client, Collection};
 use std::env;
 
@@ -36,8 +35,8 @@ impl UserRepo {
         };
         Some(self.col.insert_one(new_user, None).await)
     }
-
-    pub async fn validate_user(&self, user:User) -> Option<()> {
+    #[allow(dead_code)]
+    pub async fn validate_user(&self, _user:User) -> Option<()> {
         Some(())
     }
 
