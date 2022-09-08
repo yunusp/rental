@@ -41,12 +41,10 @@ impl NoteRepo {
                 None,
             )
             .await
+            .unwrap()
         {
-            Ok(x) => match x {
-                Some(_) => true,
-                None => false,
-            },
-            Err(_) => false,
+            Some(_) => true,
+            None => false,
         }
     }
 }
