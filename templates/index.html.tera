@@ -9,12 +9,8 @@
 </head>
 
 <body>
-    <h1>
-        Cookies set:
-    </h1>
-    {%for key, value in names%}
-    <p>{{key}}: {{value}}</p>
-    {%endfor%}
+    {%block header%}
+    {%endblock header%}
 </body>
 
 </html>

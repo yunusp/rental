@@ -1,0 +1,9 @@
+{% extends "base" %}
+
+{% block title %}
+ Home
+{% endblock title %}
+
+{% block content %}
+ <br>Rent a car and more things.
+{% endblock content %}

@@ -1,0 +1,14 @@
+{% extends "base" %}
+{% block title %}
+ Sign In
+{% endblock title %}
+{% block header %}
+ Sign in to your account
+{% endblock header %}
+{% block content %}
+    <form action="/signin" method="post">
+        username: <input type="text" name="uname" id="uname"> <br>
+        password: <input type="text" name="pass" id="pass"> <br>
+        <input type="submit" value="Sign In">
+    </form>
+{% endblock content %}

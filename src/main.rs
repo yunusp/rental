@@ -9,17 +9,29 @@ use rocket::{
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
-async fn index(db: &State<NoteRepo>) -> Template {
-    let cs: Vec<String> = db
-        .get_notes()
-        .await
-        .unwrap()
-        .iter()
-        .map(move |note| note.text.to_owned())
-        .collect();
-    Template::render("ui", context! {cs})
+async fn index() -> Template {
+    #[allow(non_snake_case)]
+    Template::render("home", context! {loggedIn: false})
 }
-
+#[get("/signin")]
+async fn s_sign_in() -> Template {
+    Template::render("signin", context! {})
+}
+#[get("/signup")]
+async fn s_sign_up() -> Template {
+    Template::render("signup", context!{})
+}
+#[derive(FromForm)]
+struct SignUpForm {
+    uname: String,
+    pass: String,
+    pass1: String,
+}
+#[post("/signup", data="<data>")]
+async fn p_sign_up(data: Form<SignUpForm>) -> Redirect {
+    
+    Redirect::to("/")
+}
 #[derive(FromForm)]
 struct NoteReq {
     text: String,
@@ -39,24 +51,12 @@ async fn p_index(db: &State<NoteRepo>, data: Form<NoteReq>) -> Redirect {
     }
     Redirect::to(uri!("/"))
 }
-#[get("/del/<item>")]
-async fn d_index(db: &State<NoteRepo>, item: String) -> Redirect {
-    db.col
-        .delete_one(
-            doc! {
-                "text": item.to_owned()
-            },
-            None,
-        )
-        .await
-        .unwrap();
-    Redirect::to(uri!("/"))
-}
+
 #[launch]
 async fn rocket() -> _ {
     let db = NoteRepo::init().await;
     rocket::build()
         .manage(db)
-        .mount("/", routes![index, p_index, d_index])
+        .mount("/", routes![index, p_index, s_sign_in, s_sign_up, p_sign_up])
         .attach(Template::fairing())
 }
