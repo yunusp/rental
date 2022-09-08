@@ -32,19 +32,17 @@ impl NoteRepo {
     }
 
     pub async fn is_duplicate(&self, note: &String) -> bool {
-        match self
-            .col
-            .find_one(
-                doc!(
-                    "text": note.to_owned()
-                ),
-                None,
-            )
-            .await
-            .unwrap()
-        {
-            Some(_) => true,
-            None => false,
-        }
+        matches!(
+            self.col
+                .find_one(
+                    doc!(
+                        "text": note.to_owned()
+                    ),
+                    None,
+                )
+                .await
+                .unwrap(),
+            Some(_)
+        )
     }
 }
