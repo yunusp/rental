@@ -6,6 +6,12 @@
  Sign in to your account
 {% endblock header %}
 {% block content %}
+{% if uname_unavail is defined %}
+ <p>That username does not exist. Maybe you wish to <a href="/signup">sign up</a>?</p> <br>
+{% endif %}
+{% if pass_missmatch is defined %}
+ <p>Incorrect username or password. Please try again.</p> <br>
+{% endif %}
     <form action="/signin" method="post">
         username: <input type="text" name="uname" id="uname"> <br>
         password: <input type="text" name="pass" id="pass"> <br>

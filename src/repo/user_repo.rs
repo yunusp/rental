@@ -18,9 +18,8 @@ impl UserRepo {
         UserRepo { col }
     }
 
-
     ///Add 1 user to the database.
-    /// 
+    ///
     /// `None` indicates a user is already present.
     pub async fn add_user(&self, user: User) -> Option<Result<InsertOneResult, Error>> {
         println!("Adding user");
@@ -36,8 +35,21 @@ impl UserRepo {
         Some(self.col.insert_one(new_user, None).await)
     }
     #[allow(dead_code)]
-    pub async fn validate_user(&self, _user:User) -> Option<()> {
+    pub async fn validate_user(&self, _user: User) -> Option<()> {
         Some(())
+    }
+
+    pub async fn get_user(&self, uname: &str) -> Option<User> {
+        self.col
+            .find_one(
+                doc! {
+                    "uname": uname.to_owned()
+                },
+                None,
+            )
+            .await
+            .expect("Error fetching users.")
+        // None
     }
 
     async fn is_duplicate(&self, uname: &String) -> bool {

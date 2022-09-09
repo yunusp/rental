@@ -16,9 +16,51 @@ async fn index() -> Template {
     Template::render("home", context! {loggedIn: false})
 }
 #[get("/signin")]
-async fn s_sign_in() -> Template {
-    Template::render("signin", context! {})
+async fn s_sign_in(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
+    let lock = ctx.lock().unwrap().to_owned();
+    ctx.lock().unwrap().remove("pass_missmatch");
+    ctx.lock().unwrap().remove("uname_unavail");
+    Template::render("signin", lock)
 }
+
+#[derive(FromForm)]
+struct SignInForm {
+    uname: String,
+    pass: String,
+}
+
+#[post("/signin", data = "<data>")]
+async fn p_sign_in(
+    data: Form<SignInForm>,
+    ctx: &State<Mutex<HashMap<String, String>>>,
+    db: &State<UserRepo>,
+) -> Redirect {
+    let hash = sha256sum(&data.pass);
+    match db.get_user(&data.uname).await {
+        Some(user) => {
+            if user.pass == hash {
+                ctx.lock()
+                    .unwrap()
+                    .insert("auth_uname".to_string(), format!("{}", user.uname));
+                Redirect::to(uri!("/"))
+            } else {
+                ctx.lock()
+                    .unwrap()
+                    .insert("pass_missmatch".to_string(), "true".to_string());
+                println!("{:?}", ctx.lock().unwrap());
+                Redirect::to(uri!("/signin"))
+            }
+        }
+        None => {
+            ctx.lock()
+                .unwrap()
+                .insert("uname_unavail".to_string(), "true".to_string());
+            Redirect::to(uri!("/signin"))
+        }
+    }
+    // Redirect::to(uri!("/"))
+}
+
 #[get("/signup")]
 async fn s_sign_up(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
     let lock = ctx.lock().unwrap().to_owned();
@@ -39,10 +81,8 @@ async fn p_sign_up(
     data: Form<SignUpForm>,
 ) -> Redirect {
     if data.pass != data.pass1 {
-        //TODO: add to context
         let mut ctx = ctx.lock().unwrap();
         ctx.insert("no_pass_match".to_string(), "a".to_string());
-        println!("{:?}", ctx);
         return Redirect::to("/signup");
     }
     let new_user = User {
@@ -59,18 +99,18 @@ async fn p_sign_up(
                 .unwrap()
                 .insert("uname_unavail".to_string(), "true".to_string());
             return Redirect::to(uri!("/signup"));
-        } //TODO: Add to context
+        }
     }
     Redirect::to(uri!("/"))
 }
 
 #[launch]
-async fn rocket() -> _ {
+async fn rocket() -> rocket::Rocket<rocket::Build> {
     let db = UserRepo::init().await;
     let ctx: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     rocket::build()
         .manage(db)
         .manage(ctx)
-        .mount("/", routes![index, s_sign_in, s_sign_up, p_sign_up])
+        .mount("/", routes![index, s_sign_in,p_sign_in, s_sign_up, p_sign_up])
         .attach(Template::fairing())
 }
