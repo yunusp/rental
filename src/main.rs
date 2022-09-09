@@ -6,14 +6,14 @@ use bson::doc;
 use models::user_model::User;
 use rental::sha256sum;
 use rocket::{form::Form, get, launch, post, response::Redirect, routes, uri, FromForm, State};
-use rocket_dyn_templates::{context, Template};
+use rocket_dyn_templates::Template;
 
 use crate::repo::user_repo::UserRepo;
 
 #[get("/")]
-async fn index() -> Template {
-    #[allow(non_snake_case)]
-    Template::render("home", context! {loggedIn: false})
+async fn index(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
+    let lock = ctx.lock().unwrap().to_owned();
+    Template::render("home", lock)
 }
 #[get("/signin")]
 async fn s_sign_in(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {

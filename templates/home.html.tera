@@ -1,9 +1,12 @@
 {% extends "base" %}
 
 {% block title %}
- Home
+Home
 {% endblock title %}
 
 {% block content %}
- <br>Rent a car and more things.
+{% if auth_uname is defined %}
+<p>Hello {{auth_uname}} you are now signed in. <a href="/signout/{{auth_uname}}">click here</a> to sign out.</p>
+{% endif %}
+<br>Rent a car and more things.
 {% endblock content %}
