@@ -2,11 +2,8 @@
 {% block title %}
 Sign In
 {% endblock title %}
-{% block header %}
-Create a new account
-{% endblock header %}
 {% block content %}
-
+Create a new account
 {% if no_pass_match is defined%}
 <p>Passwords do not match. please try again</p> <br>
 {% endif %}
