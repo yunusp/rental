@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{%block title%}Home{%endblock title%} - Rental</title>
+    {% block style %}
+
+    {% endblock style %}
 </head>
+
 <body>
-{% block header %}
-    {% if loggedIn %}
+    <div id="header">
+        {% block header %}
+        {% if loggedIn %}
         {{name}}
-    {%else%}
+        {%else%}
         <a href="/signin">sign in</a> <a href="/signup">sign up</a>
-    {% endif %}
-{% endblock header %}
-{% block content %}
- Hello world
-{% endblock content %}
+        {% endif %}
+        {% endblock header %}
+    </div>
+    <div id="content">
+        {% block content %}
+        Hello world
+        {% endblock content %}
+    </div>
+    <div id="foooter">
+        {% block footer %}
+         made with love and stuff
+        {% endblock footer %}
+    </div>
 </body>
+
 </html>
