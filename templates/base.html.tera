@@ -15,11 +15,16 @@
             margin: 0%;
         }
 
+        body {
+            display: grid;
+            grid-template-rows: 1fr 20fr 1fr;
+        }
+
         #header {
+            background-color: white;
             position: sticky;
             top: 0%;
-            height: 1rm;
-            width: 100%;
+            height: 1rem;
             font-family: sans-serif;
             border-bottom: 2px solid black;
             padding: 1rem;
@@ -29,19 +34,36 @@
             font-size: 1.1rem;
         }
 
-        /*
-        #header>span {
+        #content {
+            font-family: sans-serif;
+            background-color: aqua;
             padding: 1rem;
-        }*/
+        }
+        #footer {
+            font-family: sans-serif;
+            padding-bottom: 0.5rem;
+            height: 100%;
+            border-top: 1px solid black;
+            background-color: white;
+            position: sticky;
+            display: grid;
+            align-items: center;
+            justify-items: center;
+            
+            /*top: 100%;*/
+        }
+        #footer>* {
+            padding-left: 1rem;
+        }
 
         #site {
             grid-column: 1 / 4;
             height: 100%;
-            text-align: center;
+            text-align: left;
         }
 
         #sign {
-            grid-column: 18 / 20;
+            grid-column: 19 / 21;
             text-align: right;
         }
 
@@ -51,6 +73,13 @@
             font-weight: bold;
             padding-right: 10px;
         }
+        #content {
+            height: 100%;
+        }
+        /*#footer {
+            position: absolute;
+            bottom: 100%;
+        }*/
     </style>
     {% endblock style %}
 </head>
@@ -74,9 +103,9 @@
         Hello world
         {% endblock content %}
     </div>
-    <div id="foooter">
+    <div id="footer">
         {% block footer %}
-        made with love and stuff
+        <span>made with love and stuff</span>
         {% endblock footer %}
     </div>
 </body>

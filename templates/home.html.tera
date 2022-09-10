@@ -8,5 +8,63 @@ Home
 {% if auth_uname is defined %}
 <p>Hello {{auth_uname}} you are now signed in. <a href="/signout/{{auth_uname}}">click here</a> to sign out.</p>
 {% endif %}
-<br>Rent a car and more things.
+<h1>Rent a car and more things.</h1>     <br>
+
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. <br>
+Voluptatem, dolorum distinctio perferendis harum accusantium, <br>
+reprehenderit qui placeat id inventore excepturi doloribus laborum. <br>
+Quasi eaque, amet porro illum quaerat sequi consequatur. <br>
+
 {% endblock content %}
