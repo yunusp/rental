@@ -1,6 +1,7 @@
 mod controllers;
 mod models;
 mod repo;
+mod interfaces;
 use std::{collections::HashMap, sync::Mutex};
 
 use rocket::{launch, routes};
