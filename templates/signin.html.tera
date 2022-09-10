@@ -1,20 +1,21 @@
 {% extends "base" %}
 {% block title %}
- Sign In
+Sign In
 {% endblock title %}
-{% block header %}
- Sign in to your account
-{% endblock header %}
+{# {% block header %} #}
+
+{# {% endblock header %} #}
 {% block content %}
+Sign in to your account
 {% if uname_unavail is defined %}
- <p>That username does not exist. Maybe you wish to <a href="/signup">sign up</a>?</p> <br>
+<p>That username does not exist. Maybe you wish to <a href="/signup">sign up</a>?</p> <br>
 {% endif %}
 {% if pass_missmatch is defined %}
- <p>Incorrect username or password. Please try again.</p> <br>
+<p>Incorrect username or password. Please try again.</p> <br>
 {% endif %}
-    <form action="/signin" method="post">
-        username: <input type="text" name="uname" id="uname"> <br>
-        password: <input type="text" name="pass" id="pass"> <br>
-        <input type="submit" value="Sign In">
-    </form>
+<form action="/signin" method="post">
+    username: <input type="text" name="uname" id="uname"> <br>
+    password: <input type="text" name="pass" id="pass"> <br>
+    <input type="submit" value="Sign In">
+</form>
 {% endblock content %}
