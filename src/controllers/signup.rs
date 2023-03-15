@@ -20,7 +20,7 @@ pub struct SignUpForm {
     pass: String,
     pass1: String,
 }
-#[post("/signup", data = "<data>")]
+#[post("/signup", data = "<data>")] 
 pub async fn p_sign_up(
     ctx: &State<Mutex<HashMap<String, String>>>,
     db: &State<UserRepo>,
