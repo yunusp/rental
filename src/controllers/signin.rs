@@ -30,7 +30,6 @@ pub async fn p_sign_in(
     db: &State<UserRepo>,
 ) -> Status {
     let hash = sha256sum(&data.pass);
-    println!("{:?}", data);
     match db.get_user(&data.uname).await {
         Some(user) => {
             if user.pass == hash {
