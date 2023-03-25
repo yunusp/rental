@@ -30,7 +30,12 @@ impl UserRepo {
         let new_user = User {
             id: None,
             uname: user.uname,
+            email: user.email,
+            adhaar_number: user.adhaar_number,
+            phone_number: user.phone_number,
             pass: user.pass,
+            photo_id: user.photo_id,
+            birthday: user.birthday,
         };
         Some(self.col.insert_one(new_user, None).await)
     }
