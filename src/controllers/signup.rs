@@ -1,19 +1,13 @@
-use std::{
-    collections::HashMap,
-    env,
-    fs::{write, File},
-    io::Write,
-    path::PathBuf,
-    sync::Mutex,
-};
-use rental::sha256sum;
 use crate::{models::user_model::User, repo::user_repo::UserRepo};
 use base64::{engine::general_purpose, Engine as _};
 use bson::doc;
 use chrono::{self, Utc};
 use dotenv::dotenv;
+use rental::sha256sum;
 use rocket::{form::Form, get, post, FromForm, State};
 use rocket_dyn_templates::Template;
+use std::{collections::HashMap, env, fs::File, io::Write, path::PathBuf, sync::Mutex};
+
 #[get("/signup")]
 pub async fn g_sign_up(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
     let lock = ctx.lock().unwrap().to_owned();
@@ -38,20 +32,12 @@ pub async fn p_sign_up(
     db: &State<UserRepo>,
     data: Form<SignUpForm>,
 ) -> String {
-    // println!("{data:?}");
     dotenv().unwrap_or_else(|_| PathBuf::default());
     let now = Utc::now().timestamp();
     let bytes = general_purpose::STANDARD.decode(&data.photo).unwrap();
     let file_dir = env::var("UPLOAD_PATH").unwrap();
     let file_id = &format!("image-{now}");
     let file_name = &format!("{}/{}", &file_dir, &file_id);
-    let mut handle = File::create(file_name).unwrap();
-    handle.write_all(&bytes).unwrap();
-    // if data.pass != data.pass1 {
-    //     let mut ctx = ctx.lock().unwrap();
-    //     ctx.insert("no_pass_match".to_string(), "a".to_string());
-    //     return Redirect::to("/signup");
-    // }
     let new_user = User {
         id: None,
         uname: data.uname.to_owned(),
@@ -64,6 +50,9 @@ pub async fn p_sign_up(
     };
     match db.add_user(new_user).await {
         Some(resp) => {
+            // only create file if adding user succeeds
+            let mut handle = File::create(file_name).unwrap();
+            handle.write_all(&bytes).unwrap();
             resp.unwrap();
         }
         None => {
@@ -72,7 +61,6 @@ pub async fn p_sign_up(
                 .insert("uname_unavail".to_string(), "true".to_string());
             return "Hello".to_string();
         }
-    }
+    };
     "Hello".to_string()
-    // Redirect::to(uri!("/"))
 }
