@@ -34,13 +34,13 @@ pub async fn p_sign_in(
     match db.get_user(&data.uname).await {
         Some(user) => {
             if user.pass == hash {
-                return Status::Ok;
+                Status::Ok
             } else {
-                return Status::Unauthorized;
+                Status::Unauthorized
             }
         }
         None => {
-            return Status::Forbidden;
+            Status::Forbidden
         }
     }
 }
