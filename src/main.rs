@@ -9,8 +9,7 @@ use rocket::{launch, routes};
 use rocket_dyn_templates::Template;
 
 use crate::controllers::{
-    index::g_index,
-    signin::{g_sign_in, p_sign_in},
+    signin::p_sign_in,
     signup::{g_sign_up, p_sign_up},
 };
 use crate::repo::user_repo::UserRepo;
@@ -22,17 +21,7 @@ async fn rocket() -> rocket::Rocket<rocket::Build> {
     rocket::build()
         .manage(db)
         .manage(ctx)
-        .mount(
-            "/",
-            routes![
-                g_index,
-                g_sign_in,
-                p_sign_in,
-                g_sign_up,
-                p_sign_up,
-                all_options
-            ],
-        )
+        .mount("/", routes![p_sign_in, g_sign_up, p_sign_up, all_options])
         .attach(Template::fairing())
         .attach(CORS)
 }

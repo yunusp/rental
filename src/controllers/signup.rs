@@ -4,7 +4,7 @@ use bson::doc;
 use chrono::{self, Utc};
 use dotenv::dotenv;
 use rental::sha256sum;
-use rocket::{form::Form, get, post, FromForm, State};
+use rocket::{form::Form, get, post, FromForm, State, http::Status};
 use rocket_dyn_templates::Template;
 use std::{collections::HashMap, env, fs::File, io::Write, path::PathBuf, sync::Mutex};
 
@@ -31,7 +31,7 @@ pub async fn p_sign_up(
     ctx: &State<Mutex<HashMap<String, String>>>,
     db: &State<UserRepo>,
     data: Form<SignUpForm>,
-) -> String {
+) -> (Status, String) {
     dotenv().unwrap_or_else(|_| PathBuf::default());
     let now = Utc::now().timestamp();
     let bytes = general_purpose::STANDARD.decode(&data.photo).unwrap();
@@ -54,13 +54,13 @@ pub async fn p_sign_up(
             let mut handle = File::create(file_name).unwrap();
             handle.write_all(&bytes).unwrap();
             resp.unwrap();
+            return (Status::Created, "Success".to_string());
         }
         None => {
             ctx.lock()
                 .unwrap()
                 .insert("uname_unavail".to_string(), "true".to_string());
-            return "Hello".to_string();
+            return (Status::Forbidden, "User name taken".to_string());
         }
     };
-    "Hello".to_string()
 }

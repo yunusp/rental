@@ -3,19 +3,9 @@ use std::{collections::HashMap, sync::Mutex};
 use bson::doc;
 use rental::sha256sum;
 use rocket::{
-    form::Form, get, http::Status, post, FromForm, State,
+    form::Form, http::Status, post, FromForm, State,
 };
-use rocket_dyn_templates::Template;
-
 use crate::repo::user_repo::UserRepo;
-
-#[get("/signin")]
-pub async fn g_sign_in(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
-    let lock = ctx.lock().unwrap().to_owned();
-    ctx.lock().unwrap().remove("pass_missmatch");
-    ctx.lock().unwrap().remove("uname_unavail");
-    Template::render("signin", lock)
-}
 
 #[derive(FromForm, Debug)]
 pub struct SignInForm {
