@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct Car {
     #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
     pub id: Option<ObjectId>,
-    pub owner_id: ObjectId,
+    pub owner_id: Option<ObjectId>, // ! make this not optional ASAP
     pub borrower_id: Option<ObjectId>,
 
     pub name: String,
