@@ -57,7 +57,7 @@ impl UserRepo {
         // None
     }
 
-    async fn is_duplicate(&self, uname: &String) -> bool {
+    async fn is_duplicate(&self, uname: &str) -> bool {
         matches!(
             self.col
                 .find_one(

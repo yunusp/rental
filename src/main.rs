@@ -5,6 +5,7 @@ mod repo;
 use std::{collections::HashMap, sync::Mutex};
 
 use rental::{all_options, CORS};
+use repo::car_repo::CarRepo;
 use rocket::{launch, routes};
 use rocket_dyn_templates::Template;
 
@@ -16,10 +17,13 @@ use crate::repo::user_repo::UserRepo;
 
 #[launch]
 async fn rocket() -> rocket::Rocket<rocket::Build> {
-    let db = UserRepo::init().await;
+    let user_db = UserRepo::init().await;
+    let car_db = CarRepo::init().await;
+
     let ctx: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     rocket::build()
-        .manage(db)
+        .manage(user_db)
+        .manage(car_db)
         .manage(ctx)
         .mount("/", routes![p_sign_in, g_sign_up, p_sign_up, all_options])
         .attach(Template::fairing())
