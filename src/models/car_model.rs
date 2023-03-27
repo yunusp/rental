@@ -14,7 +14,7 @@ pub struct Car {
     pub brand: String,
     pub price: u64,
     pub yop: u16,
-    pub dt: u128,
+    pub dt: u64,
     pub iat: String, // issued at
     pub ito: String, // issued to (time)
     pub picture: String,

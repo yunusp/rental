@@ -38,6 +38,7 @@ impl CarRepo {
             .unwrap_or_default()
     }
 
+    #[allow(unused)]
     pub async fn get_car(&self, number: &str) -> Option<Car> {
         self.col
         .find_one(

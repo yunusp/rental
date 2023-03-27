@@ -40,9 +40,9 @@ pub async fn add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status 
     match car_db.add_car(new_car).await {
         Some(x) => {
             x.unwrap();
-            return Status::Ok;
+            return Status::Created;
         }
-        None => return Status::Forbidden,
+        None => return Status::Unauthorized,
     }
 
 }
