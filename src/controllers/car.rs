@@ -33,7 +33,7 @@ pub async fn add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status 
         price: data.price,
         yop: data.yop,
         dt: 600, // ! also change this asap
-        picture: "imageplaceholder.png".to_owned(),
+        picture: data.picture.to_owned(),
         desc: data.desc.clone(),
     };
 
