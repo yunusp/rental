@@ -4,7 +4,7 @@ use bson::doc;
 use chrono::{self, Utc};
 use dotenv::dotenv;
 use rental::sha256sum;
-use rocket::{form::Form, get, post, FromForm, State, http::Status};
+use rocket::{form::Form, post, FromForm, State, http::Status};
 use std::{collections::HashMap, env, fs::File, io::Write, path::PathBuf, sync::Mutex};
 
 #[derive(Debug, FromForm)]
@@ -46,13 +46,13 @@ pub async fn p_sign_up(
             let mut handle = File::create(file_name).unwrap();
             handle.write_all(&bytes).unwrap();
             resp.unwrap();
-            return (Status::Created, "Success".to_string());
+            (Status::Created, "Success".to_string())
         }
         None => {
             ctx.lock()
                 .unwrap()
                 .insert("uname_unavail".to_string(), "true".to_string());
-            return (Status::Forbidden, "User name taken".to_string());
+            (Status::Forbidden, "User name taken".to_string())
         }
-    };
+    }
 }
