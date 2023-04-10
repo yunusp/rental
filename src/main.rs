@@ -1,5 +1,4 @@
 mod controllers;
-mod interfaces;
 mod models;
 mod repo;
 use std::{collections::HashMap, sync::Mutex};
