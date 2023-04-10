@@ -20,7 +20,7 @@ pub struct CarAddForm {
 }
 
 #[post("/cars", data = "<data>")]
-pub async fn add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status {
+pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status {
     let new_car = Car {
         id: None,
         owner_id: None, // ! change this ASAP

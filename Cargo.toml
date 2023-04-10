@@ -17,7 +17,4 @@ futures = "0.3.24"
 sha2 = "0.10.5"
 base64 = "0.21.0"
 
-[dependencies.rocket_dyn_templates]
-version = "0.1.0-rc.2"
-features = ["handlebars", "tera"]
 

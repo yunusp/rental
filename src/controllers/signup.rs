@@ -5,16 +5,8 @@ use chrono::{self, Utc};
 use dotenv::dotenv;
 use rental::sha256sum;
 use rocket::{form::Form, get, post, FromForm, State, http::Status};
-use rocket_dyn_templates::Template;
 use std::{collections::HashMap, env, fs::File, io::Write, path::PathBuf, sync::Mutex};
 
-#[get("/signup")]
-pub async fn g_sign_up(ctx: &State<Mutex<HashMap<String, String>>>) -> Template {
-    let lock = ctx.lock().unwrap().to_owned();
-    ctx.lock().unwrap().remove("no_pass_match");
-    ctx.lock().unwrap().remove("uname_unavail");
-    Template::render("signup", lock)
-}
 #[derive(Debug, FromForm)]
 pub struct SignUpForm {
     uname: String,

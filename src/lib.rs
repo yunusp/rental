@@ -1,7 +1,7 @@
-use sha2::{self, Sha256, Digest};
 use rocket::fairing::{Fairing, Info, Kind};
 use rocket::http::Header;
-use rocket::{Request, Response, options};
+use rocket::{options, Request, Response};
+use sha2::{self, Digest, Sha256};
 
 pub fn sha256sum(s: &str) -> String {
     let mut hasher = Sha256::new();
@@ -32,6 +32,7 @@ impl Fairing for CORS {
 }
 
 /// Catches all OPTION requests in order to get the CORS related Fairing triggered.
+#[allow(clippy::let_unit_value)]
 #[options("/<_..>")]
 pub fn all_options() {
     /* Intentionally left empty */
