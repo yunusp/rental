@@ -1,4 +1,7 @@
+use std::str::FromStr;
+
 use crate::{models::car_model::Car, repo::car_repo::CarRepo};
+use bson::oid::ObjectId;
 use rocket::{form::Form, get, http::Status, post, serde::json::Json, FromForm, State};
 
 #[get("/cars")]
@@ -17,13 +20,16 @@ pub struct CarAddForm {
     pub ito: String,
     pub picture: String,
     pub desc: Option<String>,
+    owner_id: String,
 }
 
 #[post("/cars", data = "<data>")]
 pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status {
+    // let oid = get_oid_by_uname(data.owner_id);
     let new_car = Car {
         id: None,
-        owner_id: None, // ! change this ASAP
+        // owner_id: Some(oid),
+        owner_id: Some(data.owner_id.clone()), // ! change this ASAP
         borrower_id: None,
         brand: data.brand.to_owned(),
         iat: data.iat.to_owned(),
@@ -44,5 +50,4 @@ pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Statu
         }
         None => Status::Unauthorized,
     }
-
 }
