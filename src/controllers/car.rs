@@ -1,5 +1,5 @@
 use crate::{models::car_model::Car, repo::car_repo::CarRepo};
-use rocket::{form::Form, get, http::Status, post, serde::json::Json, FromForm, State};
+use rocket::{form::Form, get, http::Status, patch, post, serde::json::Json, FromForm, State};
 
 #[get("/cars")]
 pub async fn get_cars(car_db: &State<CarRepo>) -> Json<Vec<Car>> {
@@ -53,5 +53,15 @@ pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Statu
             Status::Created
         }
         None => Status::Unauthorized,
+    }
+}
+
+#[patch("/cars/<carid>", data = "<b_id>")]
+pub async fn update_car(carid: String, b_id: Form<String>, car_db: &State<CarRepo>) -> Status {
+    if let Some(_) = car_db.get_car(&carid).await {
+        car_db.set_borrower_id(&carid, &b_id).await;
+        return Status::Ok;
+    } else {
+        return Status::InternalServerError;
     }
 }

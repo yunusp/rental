@@ -3,7 +3,7 @@ mod models;
 mod repo;
 use std::{collections::HashMap, sync::Mutex};
 
-use controllers::car::{get_car, get_cars, p_add_car};
+use controllers::car::{get_car, get_cars, p_add_car, update_car};
 use rental::{all_options, CORS};
 use repo::car_repo::CarRepo;
 use rocket::{launch, routes};
@@ -29,7 +29,8 @@ async fn rocket() -> rocket::Rocket<rocket::Build> {
                 all_options,
                 get_cars,
                 p_add_car,
-                get_car
+                get_car,
+                update_car,
             ],
         )
         .attach(CORS)

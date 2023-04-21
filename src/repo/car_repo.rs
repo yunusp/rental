@@ -64,4 +64,21 @@ impl CarRepo {
             Some(_)
         )
     }
+    pub async fn set_borrower_id(&self, c_id: &str, b_name: &str) {
+        self.col
+            .update_one(
+                doc! {
+                    "_id": ObjectId::from_str(c_id)
+                        .expect("Could not construct object id")
+                },
+                doc! {
+                    "$set" : {
+                        "borrower_id": b_name
+                    }
+                },
+                None,
+            )
+            .await
+            .unwrap();
+    }
 }
