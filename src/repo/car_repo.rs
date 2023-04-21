@@ -1,9 +1,9 @@
 use crate::models::car_model::Car;
-use bson::doc;
+use bson::{doc, oid::ObjectId};
 use dotenv;
 use futures::TryStreamExt;
 use mongodb::{error::Error, results::InsertOneResult, Client, Collection};
-use std::env;
+use std::{env, str::FromStr};
 
 pub struct CarRepo {
     pub col: Collection<Car>,
@@ -38,17 +38,16 @@ impl CarRepo {
             .unwrap_or_default()
     }
 
-    #[allow(unused)]
-    pub async fn get_car(&self, number: &str) -> Option<Car> {
+    pub async fn get_car(&self, id: &str) -> Option<Car> {
         self.col
-        .find_one(
-            doc! {
-                "number": number.to_owned()
-            },
-            None,
-        )
-        .await
-        .expect("Error fetching car.")
+            .find_one(
+                doc! {
+                    "_id": ObjectId::from_str(id).expect("Could not construct object id")
+                },
+                None,
+            )
+            .await
+            .expect("Error fetching car.")
     }
 
     async fn is_duplicate(&self, number: &str) -> bool {

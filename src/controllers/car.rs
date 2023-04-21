@@ -6,6 +6,15 @@ pub async fn get_cars(car_db: &State<CarRepo>) -> Json<Vec<Car>> {
     Json(car_db.get_all_cars().await)
 }
 
+#[get("/cars/<carid>")]
+pub async fn get_car(carid: String, car_db: &State<CarRepo>) -> Option<Json<Car>> {
+    if let Some(car) = car_db.get_car(&carid).await {
+        return Some(Json(car));
+    } else {
+        return None;
+    }
+}
+
 #[derive(FromForm)]
 pub struct CarAddForm {
     name: String,
