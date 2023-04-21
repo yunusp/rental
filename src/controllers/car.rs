@@ -1,7 +1,4 @@
-use std::str::FromStr;
-
 use crate::{models::car_model::Car, repo::car_repo::CarRepo};
-use bson::oid::ObjectId;
 use rocket::{form::Form, get, http::Status, post, serde::json::Json, FromForm, State};
 
 #[get("/cars")]
@@ -11,25 +8,23 @@ pub async fn get_cars(car_db: &State<CarRepo>) -> Json<Vec<Car>> {
 
 #[derive(FromForm)]
 pub struct CarAddForm {
-    pub name: String,
-    pub brand: String,
-    pub number: String,
-    pub price: u64,
-    pub yop: u16,
-    pub iat: String,
-    pub ito: String,
-    pub picture: String,
-    pub desc: Option<String>,
+    name: String,
+    brand: String,
+    number: String,
+    price: u64,
+    yop: u16,
+    iat: String,
+    ito: String,
+    picture: String,
+    desc: Option<String>,
     owner_id: String,
 }
 
 #[post("/cars", data = "<data>")]
 pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status {
-    // let oid = get_oid_by_uname(data.owner_id);
     let new_car = Car {
         id: None,
-        // owner_id: Some(oid),
-        owner_id: Some(data.owner_id.clone()), // ! change this ASAP
+        owner_id: Some(data.owner_id.clone()),
         borrower_id: None,
         brand: data.brand.to_owned(),
         iat: data.iat.to_owned(),
