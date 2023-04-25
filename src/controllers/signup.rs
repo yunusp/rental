@@ -1,7 +1,6 @@
 use crate::{models::user_model::User, repo::user_repo::UserRepo};
 use base64::{engine::general_purpose, Engine as _};
 use bson::doc;
-use chrono::{self, Utc};
 use dotenv::dotenv;
 use rental::sha256sum;
 use rocket::{form::Form, post, FromForm, State, http::Status};
@@ -25,10 +24,9 @@ pub async fn p_sign_up(
     data: Form<SignUpForm>,
 ) -> (Status, String) {
     dotenv().unwrap_or_else(|_| PathBuf::default());
-    let now = Utc::now().timestamp();
     let bytes = general_purpose::STANDARD.decode(&data.photo).unwrap();
     let file_dir = env::var("UPLOAD_PATH").unwrap();
-    let file_id = &format!("image-{now}");
+    let file_id = &format!("image-{}", data.uname);
     let file_name = &format!("{}/{}", &file_dir, &file_id);
     let new_user = User {
         id: None,
