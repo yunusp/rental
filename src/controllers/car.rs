@@ -1,3 +1,7 @@
+use std::{path::PathBuf, env, fs::File, io::Write};
+use dotenv::dotenv;
+use base64::{engine::general_purpose, Engine as _};
+
 use crate::{models::car_model::Car, repo::car_repo::CarRepo};
 use rocket::{form::Form, get, http::Status, patch, post, serde::json::Json, FromForm, State};
 
@@ -31,6 +35,11 @@ pub struct CarAddForm {
 
 #[post("/cars", data = "<data>")]
 pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Status {
+    dotenv().unwrap_or_else(|_| PathBuf::default());
+    let bytes = general_purpose::STANDARD.decode(&data.picture).unwrap();
+    let file_dir = env::var("UPLOAD_PATH").unwrap();
+    let file_id = &format!("car-{}", data.number);
+    let file_name = &format!("{}/{}", &file_dir, &file_id);
     let new_car = Car {
         id: None,
         owner_id: Some(data.owner_id.clone()),
@@ -43,13 +52,15 @@ pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Statu
         price: data.price,
         yop: data.yop,
         dt: 600, // ! also change this asap
-        picture: data.picture.to_owned(),
+        picture: file_id.to_owned(),
         desc: data.desc.clone(),
     };
 
     match car_db.add_car(new_car).await {
         Some(x) => {
             x.unwrap();
+            let mut handle = File::create(file_name).unwrap();
+            handle.write_all(&bytes).unwrap();
             Status::Created
         }
         None => Status::Unauthorized,
