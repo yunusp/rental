@@ -1,9 +1,11 @@
-use std::{path::PathBuf, env, fs::File, io::Write};
-use dotenv::dotenv;
 use base64::{engine::general_purpose, Engine as _};
+use dotenv::dotenv;
+use std::{env, fs::{File, self}, io::Write, path::PathBuf};
 
 use crate::{models::car_model::Car, repo::car_repo::CarRepo};
-use rocket::{form::Form, get, http::Status, patch, post, serde::json::Json, FromForm, State};
+use rocket::{
+    delete, form::Form, get, http::Status, patch, post, serde::json::Json, FromForm, State,
+};
 
 #[get("/cars")]
 pub async fn get_cars(car_db: &State<CarRepo>) -> Json<Vec<Car>> {
@@ -74,5 +76,16 @@ pub async fn update_car(carid: String, b_id: Form<String>, car_db: &State<CarRep
         return Status::Ok;
     } else {
         return Status::InternalServerError;
+    }
+}
+
+#[delete("/cars/<carid>")]
+pub async fn drop_car(carid: String, car_db: &State<CarRepo>) -> Status {
+    let car = car_db.get_car(&carid).await.unwrap();
+    if matches!(car_db.drop_car(&carid).await, true) {
+        fs::remove_file(&format!("uploads/car-{}", car.number)).unwrap();
+        Status::Ok
+    } else {
+        Status::InternalServerError
     }
 }

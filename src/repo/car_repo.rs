@@ -99,4 +99,18 @@ impl CarRepo {
                 .unwrap();
         }
     }
+    pub async fn drop_car(&self, id: &str) -> bool {
+        matches!(
+            self.col
+                .delete_one(
+                    doc! {
+                        "_id": ObjectId::from_str(id)
+                            .expect("Could not construct object id")
+                    },
+                    None,
+                )
+                .await,
+            Ok(_),
+        )
+    }
 }
