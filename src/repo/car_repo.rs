@@ -1,5 +1,5 @@
 use crate::models::car_model::Car;
-use bson::{doc, oid::ObjectId};
+use bson::{doc, oid::ObjectId, Bson};
 use dotenv;
 use futures::TryStreamExt;
 use mongodb::{error::Error, results::InsertOneResult, Client, Collection};
@@ -65,20 +65,38 @@ impl CarRepo {
         )
     }
     pub async fn set_borrower_id(&self, c_id: &str, b_name: &str) {
-        self.col
-            .update_one(
-                doc! {
-                    "_id": ObjectId::from_str(c_id)
-                        .expect("Could not construct object id")
-                },
-                doc! {
-                    "$set" : {
-                        "borrower_id": b_name
-                    }
-                },
-                None,
-            )
-            .await
-            .unwrap();
+        if b_name == "super secret password" {
+            self.col
+                .update_one(
+                    doc! {
+                        "_id": ObjectId::from_str(c_id)
+                            .expect("Could not construct object id")
+                    },
+                    doc! {
+                        "$set" : {
+                            "borrower_id": Bson::Null
+                        }
+                    },
+                    None,
+                )
+                .await
+                .unwrap();
+        } else {
+            self.col
+                .update_one(
+                    doc! {
+                        "_id": ObjectId::from_str(c_id)
+                            .expect("Could not construct object id")
+                    },
+                    doc! {
+                        "$set" : {
+                            "borrower_id": b_name
+                        }
+                    },
+                    None,
+                )
+                .await
+                .unwrap();
+        }
     }
 }
