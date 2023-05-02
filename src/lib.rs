@@ -38,7 +38,9 @@ pub fn all_options() {
     /* Intentionally left empty */
 }
 
-// need the next two methods to future proof just in case someone decides to take a funny username
+// need the next two methods to future proof just in case
+// someone decides to take a funny username
+
 #[get("/public/image-null")]
 pub async fn handle_null_images() -> Status {
     Status::NotFound
