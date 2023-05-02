@@ -5,7 +5,7 @@ use std::{collections::HashMap, sync::Mutex};
 
 use controllers::car::{drop_car, get_car, get_cars, p_add_car, update_car};
 use controllers::users::get_user;
-use rental::{all_options, CORS};
+use rental::{all_options, handle_null_cars, handle_null_images, CORS};
 use repo::car_repo::CarRepo;
 use rocket::fs::{relative, FileServer};
 use rocket::{launch, routes};
@@ -35,6 +35,8 @@ async fn rocket() -> rocket::Rocket<rocket::Build> {
                 update_car,
                 get_user,
                 drop_car,
+                handle_null_cars,
+                handle_null_images,
             ],
         )
         .mount("/public", FileServer::from(relative!("uploads")))

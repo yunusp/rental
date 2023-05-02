@@ -1,6 +1,6 @@
 use rocket::fairing::{Fairing, Info, Kind};
-use rocket::http::Header;
-use rocket::{options, Request, Response};
+use rocket::http::{Header, Status};
+use rocket::{get, options, Request, Response};
 use sha2::{self, Digest, Sha256};
 
 pub fn sha256sum(s: &str) -> String {
@@ -36,4 +36,14 @@ impl Fairing for CORS {
 #[options("/<_..>")]
 pub fn all_options() {
     /* Intentionally left empty */
+}
+
+// need the next two methods to future proof just in case someone decides to take a funny username
+#[get("/public/image-null")]
+pub async fn handle_null_images() -> Status {
+    Status::NotFound
+}
+#[get("/public/car-null")]
+pub async fn handle_null_cars() -> Status {
+    Status::NotFound
 }
