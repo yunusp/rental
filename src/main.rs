@@ -1,7 +1,6 @@
 mod controllers;
 mod models;
 mod repo;
-use std::{collections::HashMap, sync::Mutex};
 
 use controllers::car::{drop_car, get_car, get_cars, p_add_car, update_car};
 use controllers::users::get_user;
@@ -18,11 +17,9 @@ async fn rocket() -> _ {
     let user_db = UserRepo::init().await;
     let car_db = CarRepo::init().await;
 
-    let ctx: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     rocket::build()
         .manage(user_db)
         .manage(car_db)
-        .manage(ctx)
         .mount(
             "/",
             routes![

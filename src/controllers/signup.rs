@@ -3,8 +3,8 @@ use base64::{engine::general_purpose, Engine as _};
 use bson::doc;
 use dotenv::dotenv;
 use rental::sha256sum;
-use rocket::{form::Form, post, FromForm, State, http::Status};
-use std::{collections::HashMap, env, fs::File, io::Write, path::PathBuf, sync::Mutex};
+use rocket::{form::Form, http::Status, post, FromForm, State};
+use std::{env, fs::File, io::Write, path::PathBuf};
 
 #[derive(Debug, FromForm)]
 pub struct SignUpForm {
@@ -19,7 +19,6 @@ pub struct SignUpForm {
 
 #[post("/signup", data = "<data>")]
 pub async fn p_sign_up(
-    ctx: &State<Mutex<HashMap<String, String>>>,
     db: &State<UserRepo>,
     data: Form<SignUpForm>,
 ) -> (Status, String) {
@@ -46,11 +45,6 @@ pub async fn p_sign_up(
             resp.unwrap();
             (Status::Created, "Success".to_string())
         }
-        None => {
-            ctx.lock()
-                .unwrap()
-                .insert("uname_unavail".to_string(), "true".to_string());
-            (Status::Forbidden, "User name taken".to_string())
-        }
+        None => (Status::Forbidden, "User name taken".to_string()),
     }
 }

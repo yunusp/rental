@@ -1,5 +1,3 @@
-use std::{collections::HashMap, sync::Mutex};
-
 use bson::doc;
 use rental::sha256sum;
 use rocket::{
@@ -16,7 +14,6 @@ pub struct SignInForm {
 #[post("/signin", data = "<data>")]
 pub async fn p_sign_in(
     data: Form<SignInForm>,
-    _ctx: &State<Mutex<HashMap<String, String>>>,
     db: &State<UserRepo>,
 ) -> Status {
     let hash = sha256sum(&data.pass);
