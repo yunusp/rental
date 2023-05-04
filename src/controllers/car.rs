@@ -14,11 +14,7 @@ pub async fn get_cars(car_db: &State<CarRepo>) -> Json<Vec<Car>> {
 
 #[get("/cars/<carid>")]
 pub async fn get_car(carid: String, car_db: &State<CarRepo>) -> Option<Json<Car>> {
-    if let Some(car) = car_db.get_car(&carid).await {
-        return Some(Json(car));
-    } else {
-        return None;
-    }
+    car_db.get_car(&carid).await.map(Json)
 }
 
 #[derive(FromForm)]
@@ -71,11 +67,11 @@ pub async fn p_add_car(car_db: &State<CarRepo>, data: Form<CarAddForm>) -> Statu
 
 #[patch("/cars/<carid>", data = "<b_id>")]
 pub async fn update_car(carid: String, b_id: Form<String>, car_db: &State<CarRepo>) -> Status {
-    if let Some(_) = car_db.get_car(&carid).await {
+    if car_db.get_car(&carid).await.is_some() {
         car_db.set_borrower_id(&carid, &b_id).await;
-        return Status::Ok;
+        Status::Ok
     } else {
-        return Status::InternalServerError;
+        Status::InternalServerError
     }
 }
 
@@ -83,7 +79,7 @@ pub async fn update_car(carid: String, b_id: Form<String>, car_db: &State<CarRep
 pub async fn drop_car(carid: String, car_db: &State<CarRepo>) -> Status {
     let car = car_db.get_car(&carid).await.unwrap();
     if matches!(car_db.drop_car(&carid).await, true) {
-        fs::remove_file(&format!("uploads/car-{}", car.number)).unwrap();
+        fs::remove_file(format!("uploads/car-{}", car.number)).unwrap();
         Status::Ok
     } else {
         Status::InternalServerError
