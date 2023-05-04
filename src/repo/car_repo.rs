@@ -65,6 +65,7 @@ impl CarRepo {
         )
     }
     pub async fn set_borrower_id(&self, c_id: &str, b_name: &str) {
+        // this is left undocumented for security reasons
         if b_name == "super secret password" {
             self.col
                 .update_one(

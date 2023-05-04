@@ -14,7 +14,7 @@ use crate::controllers::{signin::p_sign_in, signup::p_sign_up};
 use crate::repo::user_repo::UserRepo;
 
 #[launch]
-async fn rocket() -> rocket::Rocket<rocket::Build> {
+async fn rocket() -> _ {
     let user_db = UserRepo::init().await;
     let car_db = CarRepo::init().await;
 
